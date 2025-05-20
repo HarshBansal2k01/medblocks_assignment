@@ -1,7 +1,7 @@
 // src/db.ts
 import { PGlite } from "@electric-sql/pglite";
 
-const db = new PGlite();
+const db = new PGlite("idb://patient-db");
 
 await db.exec(`
     CREATE TABLE IF NOT EXISTS patients (

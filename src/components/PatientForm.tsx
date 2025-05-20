@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import db from "../db";
 
 export default function PatientForm() {
+  const channel = new BroadcastChannel("patient-updates");
+
   const [formData, setFormData] = useState({
     name: "",
     age: "",
@@ -25,6 +27,7 @@ export default function PatientForm() {
       INSERT INTO patients (name, age, gender, dob, medical_problem)
       VALUES ('${name}', ${age}, '${gender}', '${dob}', '${medical_problem}')
     `);
+    channel.postMessage("patient-updated");
 
     setMessage("Patient registered successfully.");
     setFormData({
