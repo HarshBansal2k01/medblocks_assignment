@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import db from "../db";
+import { getDb } from "../db";
 
 export default function PatientForm() {
   const channel = new BroadcastChannel("patient-updates");
@@ -22,11 +22,22 @@ export default function PatientForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const { name, age, gender, dob, medical_problem } = formData;
-
+    const db = await getDb();
+    // await db.exec(`
+    //   INSERT INTO patients (name, age, gender, dob, medical_problem)
+    //   VALUES ('${name}', ${age}, '${gender}', '${dob}', '${medical_problem}')
+    // `);
     await db.exec(`
-      INSERT INTO patients (name, age, gender, dob, medical_problem)
-      VALUES ('${name}', ${age}, '${gender}', '${dob}', '${medical_problem}')
-    `);
+    INSERT INTO patients (name, age, gender, dob, medical_problem)
+    VALUES (
+    '${name.replace(/'/g, "''")}', 
+    ${age}, 
+    '${gender.replace(/'/g, "''")}', 
+    '${dob}', 
+    '${medical_problem.replace(/'/g, "''")}'
+  );
+`);
+
     channel.postMessage("patient-updated");
 
     setMessage("Patient registered successfully.");

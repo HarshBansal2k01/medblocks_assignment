@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import db from "../db";
+import { getDb } from "../db";
 
 export default function SqlQueryBox() {
   const [sql, setSql] = useState("SELECT * FROM patients;");
@@ -9,6 +9,8 @@ export default function SqlQueryBox() {
 
   const runQuery = async () => {
     try {
+      const db = await getDb();
+
       const res = await db.query(sql);
       setResults(res.rows);
       setError("");
@@ -20,14 +22,32 @@ export default function SqlQueryBox() {
   useEffect(() => {
     channel.onmessage = (event) => {
       if (event.data === "patient-updated") {
-        runQuery(); // Re-fetch updated data
+        runQuery();
       }
     };
 
     return () => {
-      channel.close(); // Clean up on unmount
+      channel.close();
     };
   }, []);
+  useEffect(() => {
+    const handleVisibilityChange = async () => {
+      if (document.visibilityState === "visible") {
+        await runQuery(); // Re-fetch fresh data when tab becomes active
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
+  const filteredKeys =
+    results.length > 0
+      ? Object.keys(results[0]).filter((key) => key !== "id")
+      : [];
 
   return (
     <div className="bg-white shadow-md p-6 rounded">
@@ -49,7 +69,7 @@ export default function SqlQueryBox() {
         <table className="w-full border text-sm">
           <thead>
             <tr>
-              {Object.keys(results[0]).map((key) => (
+              {filteredKeys.map((key) => (
                 <th key={key} className="border px-2 py-1 text-left">
                   {key}
                 </th>
@@ -59,9 +79,11 @@ export default function SqlQueryBox() {
           <tbody>
             {results.map((row, idx) => (
               <tr key={idx}>
-                {Object.values(row).map((val, i) => (
-                  <td key={i} className="border px-2 py-1">
-                    {val === null || val === undefined ? "" : String(val)}
+                {filteredKeys.map((key) => (
+                  <td key={key} className="border px-2 py-1">
+                    {row[key] === null || row[key] === undefined
+                      ? ""
+                      : String(row[key])}
                   </td>
                 ))}
               </tr>
