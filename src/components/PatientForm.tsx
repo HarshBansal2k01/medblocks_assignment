@@ -51,11 +51,16 @@ export default function PatientForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white shadow-md p-6 rounded">
-      <h2 className="text-xl font-semibold mb-4">Register New Patient</h2>
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white shadow-2xl p-8 rounded-2xl border border-gray-200"
+    >
+      <h2 className="text-2xl font-semibold mb-6 text-gray-800">
+        New Patient Form
+      </h2>
 
-      <div className="mb-4">
-        <label className="block mb-1">Name</label>
+      <div className="mb-5">
+        <label className="block mb-1 text-gray-700 font-medium ">Name</label>
         <input
           type="text"
           name="name"
@@ -66,8 +71,8 @@ export default function PatientForm() {
         />
       </div>
 
-      <div className="mb-4">
-        <label className="block mb-1">Age</label>
+      <div className="mb-5">
+        <label className="block mb-1 text-gray-700 font-medium ">Age</label>
         <input
           type="number"
           name="age"
@@ -78,13 +83,13 @@ export default function PatientForm() {
         />
       </div>
 
-      <div className="mb-4">
-        <label className="block mb-1">Gender</label>
+      <div className="mb-5">
+        <label className="block mb-1 text-gray-700 font-medium ">Gender</label>
         <select
           name="gender"
           value={formData.gender}
           onChange={handleChange}
-          className="w-full border px-3 py-2 rounded"
+          className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           required
         >
           <option value="">Select Gender</option>
@@ -95,7 +100,9 @@ export default function PatientForm() {
       </div>
 
       <div className="mb-4">
-        <label className="block mb-1">Date of Birth</label>
+        <label className="block mb-1 text-gray-700 font-medium ">
+          Date of Birth
+        </label>
         <input
           type="date"
           name="dob"
@@ -107,7 +114,9 @@ export default function PatientForm() {
       </div>
 
       <div className="mb-4">
-        <label className="block mb-1">Medical Problem</label>
+        <label className="block mb-1 text-gray-700 font-medium ">
+          Medical Problem
+        </label>
         <input
           type="text"
           name="medical_problem"
@@ -120,11 +129,13 @@ export default function PatientForm() {
 
       <button
         type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded"
+        className="w-full bg-indigo-600 hover:bg-indigo-700 transition-colors text-white font-semibold py-2 rounded-lg"
       >
-        Submit
+        Register Patient
       </button>
-      {message && <p className="mt-2 text-green-600">{message}</p>}
+      {message && (
+        <p className="mt-4 text-sm text-green-600 font-medium">{message}</p>
+      )}
     </form>
   );
 }

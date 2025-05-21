@@ -37,46 +37,57 @@ export default function SqlQueryBox() {
       : [];
 
   return (
-    <div className="bg-white shadow-md p-6 rounded">
-      <h2 className="text-xl font-semibold mb-4">Run SQL Query</h2>
+    <div className="bg-white shadow-2xl p-8 rounded-2xl border border-gray-200">
+      <h2 className="text-2xl font-semibold mb-4 text-gray-800">
+        SQL Query Panel
+      </h2>
+
       <textarea
         value={sql}
         onChange={(e) => setSql(e.target.value)}
         rows={4}
-        className="w-full border px-3 py-2 mb-4 rounded"
+        className="w-full border border-gray-300 px-4 py-2 mb-4 rounded-lg font-mono focus:outline-none focus:ring-2 focus:ring-amber-400"
       />
+
       <button
         onClick={runQuery}
-        className="bg-green-600 text-white px-4 py-2 rounded mb-4"
+        className="bg-amber-500 hover:bg-amber-600 text-white font-semibold px-4 py-2 rounded-lg transition-colors"
       >
         Run Query
       </button>
-      {error && <p className="text-red-600">Error: {error}</p>}
+
+      {error && <p className="text-red-600 mt-3">❌ {error}</p>}
+
       {results.length > 0 && (
-        <table className="w-full border text-sm">
-          <thead>
-            <tr>
-              {filteredKeys.map((key) => (
-                <th key={key} className="border px-2 py-1 text-left">
-                  {key}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {results.map((row, idx) => (
-              <tr key={idx}>
+        <div className="mt-6 overflow-auto max-h-64">
+          <table className="min-w-full border border-gray-300 text-sm">
+            <thead className="bg-gray-100 sticky top-0 z-10">
+              <tr>
                 {filteredKeys.map((key) => (
-                  <td key={key} className="border px-2 py-1">
-                    {row[key] === null || row[key] === undefined
-                      ? ""
-                      : String(row[key])}
-                  </td>
+                  <th
+                    key={key}
+                    className="border px-3 py-2 text-left font-medium text-gray-700"
+                  >
+                    {key}
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {results.map((row, idx) => (
+                <tr key={idx} className="hover:bg-gray-50">
+                  {filteredKeys.map((key) => (
+                    <td key={key} className="border px-3 py-2">
+                      {row[key] === null || row[key] === undefined
+                        ? "-"
+                        : String(row[key])}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
