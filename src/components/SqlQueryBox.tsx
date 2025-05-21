@@ -22,7 +22,7 @@ export default function SqlQueryBox() {
   useEffect(() => {
     channel.onmessage = (event) => {
       if (event.data === "patient-updated") {
-        runQuery();
+        // runQuery();
       }
     };
 
