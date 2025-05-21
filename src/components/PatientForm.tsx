@@ -12,7 +12,7 @@ export default function PatientForm() {
     medical_problem: "",
   });
   const [message, setMessage] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -21,9 +21,11 @@ export default function PatientForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { name, age, gender, dob, medical_problem } = formData;
-    const db = await getDb();
-    await db.exec(`
+    setLoading(true);
+    try {
+      const { name, age, gender, dob, medical_problem } = formData;
+      const db = await getDb();
+      await db.exec(`
     INSERT INTO patients (name, age, gender, dob, medical_problem)
     VALUES (
     '${name.replace(/'/g, "''")}', 
@@ -34,16 +36,26 @@ export default function PatientForm() {
   );
 `);
 
-    channel.postMessage("patient-updated");
+      channel.postMessage("patient-updated");
 
-    setMessage("Patient registered successfully.");
-    setFormData({
-      name: "",
-      age: "",
-      gender: "",
-      dob: "",
-      medical_problem: "",
-    });
+      setMessage("Patient registered successfully.");
+      setTimeout(() => {
+        setMessage("");
+      }, 4000);
+      setFormData({
+        name: "",
+        age: "",
+        gender: "",
+        dob: "",
+        medical_problem: "",
+      });
+    } catch (err) {
+      console.error("Error inserting patient:", err);
+      setMessage("Failed to register patient.");
+      setTimeout(() => setMessage(""), 4000);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -126,8 +138,34 @@ export default function PatientForm() {
       <button
         type="submit"
         className="w-full bg-indigo-600 hover:bg-indigo-700 transition-colors text-white font-semibold py-2 rounded-lg"
+        disabled={loading}
       >
-        Register Patient
+        {loading ? (
+          <div className="flex justify-center items-center">
+            <svg
+              className="animate-spin h-5 w-5 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+              ></path>
+            </svg>
+          </div>
+        ) : (
+          "Register Patient"
+        )}
       </button>
       {message && (
         <p className="mt-4 text-sm text-green-600 font-medium">{message}</p>
