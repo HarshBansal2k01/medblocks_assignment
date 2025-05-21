@@ -30,19 +30,6 @@ export default function SqlQueryBox() {
       channel.close();
     };
   }, []);
-  useEffect(() => {
-    const handleVisibilityChange = async () => {
-      if (document.visibilityState === "visible") {
-        await runQuery(); // Re-fetch fresh data when tab becomes active
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, []);
 
   const filteredKeys =
     results.length > 0
