@@ -23,10 +23,6 @@ export default function PatientForm() {
     e.preventDefault();
     const { name, age, gender, dob, medical_problem } = formData;
     const db = await getDb();
-    // await db.exec(`
-    //   INSERT INTO patients (name, age, gender, dob, medical_problem)
-    //   VALUES ('${name}', ${age}, '${gender}', '${dob}', '${medical_problem}')
-    // `);
     await db.exec(`
     INSERT INTO patients (name, age, gender, dob, medical_problem)
     VALUES (

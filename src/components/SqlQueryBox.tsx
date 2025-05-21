@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { getDb } from "../db";
 
 export default function SqlQueryBox() {
   const [sql, setSql] = useState("SELECT * FROM patients;");
   const [results, setResults] = useState<any[]>([]);
   const [error, setError] = useState("");
-  const channel = new BroadcastChannel("patient-updates");
 
   const runQuery = async () => {
     try {
@@ -18,18 +17,6 @@ export default function SqlQueryBox() {
       setError(err.message);
     }
   };
-
-  useEffect(() => {
-    channel.onmessage = (event) => {
-      if (event.data === "patient-updated") {
-        // runQuery();
-      }
-    };
-
-    return () => {
-      channel.close();
-    };
-  }, []);
 
   const filteredKeys =
     results.length > 0
