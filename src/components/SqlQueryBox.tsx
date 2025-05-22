@@ -10,12 +10,11 @@ export default function SqlQueryBox() {
 
   const runQuery = async () => {
     setLoading(true);
+    setError("");
+    setMessage("");
     try {
       const db = await getDb();
-
       const res = await db.query(sql);
-      // setResults(res.rows);
-      // setError("");
       if (res.rows.length === 0) {
         setResults([]);
         setMessage("Database is empty. Please add data.");
@@ -26,6 +25,7 @@ export default function SqlQueryBox() {
         setResults(res.rows);
       }
     } catch (err: any) {
+      setResults([]);
       setError(err.message);
       setTimeout(() => {
         setError("");
@@ -84,9 +84,7 @@ export default function SqlQueryBox() {
       </button>
 
       {error && <p className="text-red-600 mt-3 font-bold">{error}</p>}
-      {message && !error && (
-        <p className="text-yellow-600 mt-3 font-bold">{message}</p>
-      )}
+      {message && <p className="text-yellow-600 mt-3 font-bold">{message}</p>}
       {results.length > 0 && (
         <div className="mt-6 overflow-auto max-h-64">
           <table className="min-w-full border border-gray-300 text-sm">
