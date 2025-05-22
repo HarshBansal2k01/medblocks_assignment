@@ -168,7 +168,7 @@ export default function PatientForm() {
         )}
       </button>
       {message && (
-        <p className="mt-4 text-sm text-green-600 font-medium">{message}</p>
+        <p className="mt-4 text-sm text-green-600 font-bold">{message}</p>
       )}
     </form>
   );
